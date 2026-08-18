@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState} from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import "./DiaryWrite.css";
@@ -25,9 +25,12 @@ const emotions=[
     "해체해라",
 ];
 
+const courtPositions = [4,3,2,5,6,1];
+
 function DiaryWrite(){
     //경기 일기 입력값
     const [diary, setDiary] = useState({
+        //기본 정보
         date:"",
         myTeam:"",
         opponent: "",
@@ -35,6 +38,22 @@ function DiaryWrite(){
         result: "",
         myScore: "",
         opponentScore:"",
+
+        //상세 정보
+        entry: [],
+        startingLineup: {
+            position1:"",
+            position2:"",
+            position3:"",
+            position4:"",
+            position5:"",
+            position6:"",
+            libero:"",
+        },
+        substitutions: [],
+        setFlow: [],
+
+        //감정 기록
         emotion: "",
         player: "",
         moment: "",
@@ -43,14 +62,189 @@ function DiaryWrite(){
 
     const navigate = useNavigate();
 
+    const myMatchScore = Number(diary.myScore);
+    const opponentMatchScore = Number(diary.opponentScore);
+
+    const hasValidFinalScore =
+        diary.myScore !== "" &&
+        diary.opponentScore !== "" &&
+        (
+            (myMatchScore === 3 && opponentMatchScore >= 0 && opponentMatchScore <= 2) ||
+            (opponentMatchScore === 3 && myMatchScore >= 0 && myMatchScore <= 2)
+        );
+
     //input, select, textarea 변경
     const handleChange=(e) => {
         const { name, value } = e.target;
 
-        setDiary({
-            ...diary,
-            [name]: value,
+        setDiary((prev) => {
+            const updatedDiary = {
+                ...prev,
+                [name]: value,
+            };
+
+            //세트 수 계산
+            if (name === "myScore" || name==="opponentScore"){
+                const myScore = Number(updatedDiary.myScore);
+                const opponentScore = Number(updatedDiary.opponentScore);
+
+                const hasValidScore =
+                    updatedDiary.myScore !== "" && updatedDiary.opponentScore !== "" &&
+                    (
+                        (myScore === 3 && opponentScore >= 0 && opponentScore <= 2) ||
+                        (opponentScore === 3 && myScore >= 0 && myScore <= 2)
+                    );
+
+                if (hasValidScore) {
+                    const totalSets = myScore + opponentScore;
+                    updatedDiary.setFlow = Array.from(
+                        {length: totalSets},
+                        (_, index) =>
+                            prev.setFlow[index] || {
+                                set: index + 1,
+                                myScore: "",
+                                opponentScore: "",
+                                memo: "",
+                            }
+                    );
+                } else {
+                    updatedDiary.setFlow = [];
+                }
+            }
+            return updatedDiary;
+        })
+    };
+
+    //엔트리 입력
+    const addEntryPlayer = () => {
+        setDiary((prev) => ({
+            ...prev,
+            entry: [
+                ...prev.entry,
+                {
+                    id: crypto.randomUUID(),
+                    number:"",
+                    name:"",
+                }
+            ],
+        }));
+    };
+
+    //엔트리 변경
+    const handleEntryChange = (index, field, value) => {
+        setDiary((prev) => ({
+            ...prev,
+            entry: prev.entry.map((player, i) =>
+                i === index ? {...player, [field]: value,} : player
+            ),
+        }));
+    };
+
+    const removeEntryPlayer = (index) => {
+        setDiary((prev) => {
+            const deletedPlayerId = prev.entry[index]?.id;
+
+            if (!deletedPlayerId){
+                return prev;
+            }
+
+            return {
+                ...prev,
+
+                entry: prev.entry.filter(
+                    (_,i)=> i !== index
+                ),
+
+                startingLineup: Object.fromEntries(
+                    Object.entries(prev.startingLineup).map(
+                        ([position, playerId]) => [
+                            position,
+                            playerId === deletedPlayerId ? "" : playerId,
+                        ]
+                    )
+                ),
+
+                substitutions: prev.substitutions.filter(
+                    (substitution) =>
+                        substitution.outPlayer !== deletedPlayerId && substitution.inPlayer !== deletedPlayerId
+                ),
+            };
+
         });
+    };
+
+    //스타팅라인업
+    const handleStartingLineupChange = (position, playerId) => {
+        setDiary((prev) => ({
+            ...prev,
+            startingLineup: {
+                ...prev.startingLineup,
+                [position]: playerId,
+            },
+        }));
+    };
+
+    //선수 교체
+    const addSubstitution = () => {
+        setDiary((prev) => ({
+            ...prev,
+            substitutions: [
+                ...prev.substitutions,
+                {
+                    id: crypto.randomUUID(),
+                    set:"",
+                    outPlayer:"",
+                    inPlayer:"",
+                    myScore:"",
+                    opponentScore:"",
+                },
+            ],
+        }));
+    };
+
+    //선수 교체 기록 변경
+    const handleSubstitutionChange = (index, field, value) => {
+        setDiary((prev) => ({
+            ...prev,
+            substitutions: prev.substitutions.map((substitution, i) =>
+                i === index ? {...substitution, [field]: value,} : substitution
+            ),
+        }));
+    };
+
+    //선수 교체 삭제
+    const removeSubstitution = (index) => {
+        setDiary((prev) => ({
+            ...prev,
+            substitutions: prev.substitutions.filter(
+                (_,i)=> i !== index
+            ),
+        }));
+    };
+
+    const getAvailablePlayers = (currentPosition) => {
+        const selectedPlayerIds = Object.entries(diary.startingLineup)
+            .filter(([position]) => position !== currentPosition)
+            .map(([,playerId]) => playerId)
+            .filter(Boolean);
+        
+        return diary.entry.filter(
+            (player) =>
+                player.name.trim() !== "" && !selectedPlayerIds.includes(player.id)
+        );
+    };
+
+    const handleSetFlowChange = (index, field, value) => {
+        setDiary((prev) => ({
+            ...prev,
+            setFlow: prev.setFlow.map((setData, i) =>
+            i === index ? {
+            ...setData,
+            [field]: value,
+            }
+            : setData
+            ),
+        }));
     };
 
     //경기 일기 저장 (console)
@@ -230,7 +424,7 @@ function DiaryWrite(){
                                         name="opponentScore"
                                         min="0"
                                         max="3"
-                                        palceholder="0"
+                                        placeholder="0"
                                         value={diary.opponentScore}
                                         onChange={handleChange}
                                     />
@@ -238,6 +432,327 @@ function DiaryWrite(){
                             </div>
                         </div>
                     </section>
+                    
+                    <section className="diarywrite_section">
+                        <h2>경기 상세 기록</h2>
+
+                        {/*엔트리*/}
+                        <div className="form_group">
+                            <label>엔트리</label>
+
+                            <div className="entry_list">
+                                {diary.entry.map((player, index) => (
+                                    <div className="entry_item" key={index}>
+                                        <input
+                                            type="number"
+                                            className="entry_number"
+                                            placeholder="등번호"
+                                            min="1"
+                                            value={player.number}
+                                            onChange={(e) => handleEntryChange(index, "number" ,e.target.value)
+                                            }
+                                        />
+
+                                        <input
+                                            type="text"
+                                            className="entry_name"
+                                            placeholder="선수 이름"
+                                            value={player.name}
+                                            onChange={(e)=>
+                                                handleEntryChange(
+                                                    index,
+                                                    "name",
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+
+                                        <button
+                                            type="button"
+                                            className="entry_remove"
+                                            onClick={()=>removeEntryPlayer(index)}
+                                        >삭제</button>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <button
+                                type="button"
+                                className="entry_add"
+                                onClick={addEntryPlayer}
+                            > + 선수 추가 </button>
+                        </div>
+                        
+                        {/*스타팅 라인업*/}
+                        <div className = "form_group lineup_group">
+                            <label>스타팅 라인업</label>
+                            <p className="lineup_description">
+                                스타팅라인업을 구성해주세요.
+                            </p>
+                            
+                            <div className="lineup_court">
+                                {courtPositions.map((position) => (
+                                    <div className={`lineup_position position${position}`} key={position}>
+                                    <span className="position_number">{position}</span>
+
+                                    <select
+                                        className={
+                                            diary.startingLineup[`position${position}`]
+                                            ? "lineup_select selected"
+                                            : "lineup_select"
+                                        }
+                                        value={diary.startingLineup[`position${position}`]}
+                                        onChange={(e) =>
+                                            handleStartingLineupChange(
+                                                `position${position}`,
+                                                e.target.value
+                                            )
+                                        }
+                                    >
+                                        <option value="">선수 선택</option>
+
+                                        {getAvailablePlayers(`position${position}`)
+                                            .map((player)=> (
+                                                <option key={player.id} value={player.id}>
+                                                    {player.number} {player.name}
+                                                </option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/*리베로*/}
+                        <div className="lineup_libero">
+                            <span className="position_number">L</span>
+
+                            <select
+                                className={
+                                    diary.startingLineup.libero
+                                    ?"lineup_select selected"
+                                    :"lineup_select"
+                                }
+                                value={diary.startingLineup.libero}
+                                onChange={(e)=>
+                                    handleStartingLineupChange(
+                                        "libero",
+                                        e.target.value
+                                    )
+                                }
+                            >
+                                <option value="">리베로 선택</option>
+
+                                {getAvailablePlayers("libero").map((player) => (
+                                    <option key={player.id} value={player.id}>
+                                        {player.number} {player.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/*선수 교체*/}
+                        <div className="form_group substitution_group">
+                            <label>선수 교체</label>
+                            <p className="substitution_description">
+                                선수 교체를 기록해주세요.
+                            </p>
+                            <div className="substitution_list">
+                                {diary.substitutions.map((substitution, index) => (
+                                    <div className="substitution_item" key={substitution.id}>
+                                    {/*세트*/}
+                                    <select
+                                        className="substitution_set"
+                                        value={substitution.set}
+                                        onChange={(e) =>
+                                            handleSubstitutionChange(
+                                                index,
+                                                "set",
+                                                e.target.value
+                                            )
+                                        }
+                                    >
+                                        <option value="">세트</option>
+                                        <option value="1">1세트</option>
+                                        <option value="2">2세트</option>
+                                        <option value="3">3세트</option>
+                                        <option value="4">4세트</option>
+                                        <option value="5">5세트</option>
+                                    </select>
+
+                                    {/*out*/}
+                                    <select
+                                        value={substitution.outPlayer}
+                                        onChange={(e)=>
+                                            handleSubstitutionChange(
+                                                index,
+                                                "outPlayer",
+                                                e.target.value
+                                            )
+                                        }
+                                    >
+                                        <option value="">OUT</option>
+                                        {diary.entry
+                                            .filter((player) => player.name.trim() !== "")
+                                            .filter(
+                                                (player) => player.id !== substitution.inPlayer
+                                            )
+                                            .map((player)=>(
+                                                <option key={player.id} value={player.id}>
+                                                    {player.number} {player.name}
+                                                </option>
+                                            ))
+                                        }
+                                    </select>
+
+                                    <span className="substitution_arrow">→</span>
+
+                                    {/*in*/}
+                                    <select
+                                        value={substitution.inPlayer}
+                                        onChange={(e) =>
+                                            handleSubstitutionChange(
+                                                index,
+                                                "inPlayer",
+                                                e.target.value
+                                            )
+                                        }
+                                    >
+                                        <option value="">IN</option>
+                                        {diary.entry
+                                            .filter((player) => player.name.trim() !== "")
+                                            .filter(
+                                                (player) => player.id !== substitution.outPlayer
+                                            )
+                                            .map((player) => (
+                                                <option key={player.id} value={player.id}>
+                                                    {player.number} {player.name}
+                                                </option>
+                                            ))
+                                        }
+                                    </select>
+
+                                    {/*교체 스코어*/}
+                                    <div className="substitution_score">
+                                        <span className="substitution_score_title">스코어</span>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                placeholder="0"
+                                                value={substitution.myScore}
+                                                onChange={(e)=>
+                                                    handleSubstitutionChange(
+                                                        index,
+                                                        "myScore",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <span className="score_colon">:</span>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                placeholder="0"
+                                                value={substitution.opponentScore}
+                                                onChange={(e)=>
+                                                    handleSubstitutionChange(
+                                                        index,
+                                                        "opponentScore",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                        </div>
+
+                                    <button type="button" className="substitution_remove"
+                                        onClick={()=>removeSubstitution(index)}>
+                                            삭제
+                                    </button>
+                                </div>
+                                ))}
+                            </div>
+
+                            <button
+                                type="button"
+                                className="substitution_add"
+                                onClick={addSubstitution}
+                            >+교체 기록 추가</button>
+                        </div>
+
+                        {/*세트별 흐름*/}
+                        <div className="form_group setflow_group">
+                            <label>세트별 흐름</label>
+
+                            <p className="setflow_description">
+                                각 세트의 스코어와 내가 느낀 세트별 흐름을 기록해주세요.
+                            </p>
+
+                            {!hasValidFinalScore ? (
+                                <div className="setflow_empty">
+                                    최종 스코어를 먼저 입력해주세요
+                                </div>
+                            ) : (
+                                <div className="setflow_list">
+                                    {diary.setFlow.map((setData, index) => (
+                                        <div className="setflow_item" key={setData.set}>
+                                            <div className="setflow_header">
+                                                <span className="setflow_set">
+                                                    {setData.set}세트
+                                                </span>
+
+                                                <div className="setflow_score">
+                                                    <input
+                                                        type="number"
+                                                        min="0"
+                                                        placeholder="0"
+                                                        value={setData.myScore}
+                                                        onChange={(e)=>
+                                                            handleSetFlowChange(
+                                                                index,
+                                                                "myScore",
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                    />
+
+                                                    <span>:</span>
+
+                                                    <input
+                                                        type="number"
+                                                        min="0"
+                                                        placeholder="0"
+                                                        value={setData.opponentScore}
+                                                        onChange={(e)=>
+                                                            handleSetFlowChange(
+                                                                index,
+                                                                "opponentScore",
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <textarea
+                                                rows="3"
+                                                placeholder="이 세트에서의 흐름은 어땠나요?"
+                                                value={setData.memo}
+                                                onChange={(e) =>
+                                                    handleSetFlowChange(
+                                                        index,
+                                                        "memo",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            )
+                        }
+                        </div>
+                    </div>
+                </section>
 
                     {/*오늘의 기록*/}
                     <section className="diarywrite_section">
@@ -292,7 +807,7 @@ function DiaryWrite(){
                                 id = "moment"
                                 type = "text"
                                 name = "moment"
-                                palceholder="오늘 경기에서 가장 기억에 남는 순간은?"
+                                placeholder="오늘 경기에서 가장 기억에 남는 순간은?"
                                 value={diary.moment}
                                 onChange={handleChange}
                             />
