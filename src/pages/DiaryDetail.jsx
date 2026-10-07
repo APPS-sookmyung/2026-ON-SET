@@ -2,12 +2,42 @@ import { useParams, Link } from "react-router-dom";
 import Header from "../components/Header";
 import "./DiaryDetail.css";
 
+const RESULT_CLASS_MAP = {
+    승리: "win",
+    패배: "lose",
+};
+
+const POSITION_LABELS = {
+    세터: "S",
+    아웃사이드히터: "OH",
+    아포짓스파이커: "OP",
+    미들블로커: "MB",
+    리베로: "L",
+};
+
+const STARTING_POSITIONS  = [4,3,2,5,6,1];
+
+const getPositionLabel = (position) => {
+    return POSITION_LABELS[position] ?? position;
+};
+
+const getStoredDiaries = () => {
+    try {
+        const savedDiaries = localStorage.getItem("diaries");
+        if (!savedDiaries){ return []; }
+        const parsedDiaries = JSON.parse(savedDiaries);
+        return Array.isArray(parsedDiaries) ? parsedDiaries : [];
+    } catch {
+        return [];
+    }
+};
+
 function DiaryDetail(){
     //id가져오기
     const { id } = useParams();
 
     //localStorage 전체 일기 불러오기
-    const diaries = JSON.parse(localStorage.getItem("diaries")) || [];
+    const diaries = getStoredDiaries();
 
     //현재 id와 같은 일기 찾기
     const diary = diaries.find(
@@ -28,23 +58,26 @@ function DiaryDetail(){
         );
     }
 
-    const positionLabels = {
-        세터: "S",
-        아웃사이드히터: "OH",
-        아포짓스파이커: "OP",
-        미들블로커: "MB",
-        리베로: "L",
+    const {
+        date, viewingType, myTeam, myScore, opponentScore, result, opponent, entry = [], startingLineup, substitutions = [], setFlow = [],
+        content, emotion, player, moment, momentSet,
+    } = diary;
+
+    const playerMap = new Map(
+        entry.map((player) => [player.id, player])
+    );
+
+    const getPlayer = (playerId) => {
+        return playerMap.get(playerId);
     };
 
-    const getPositionLabel = (position) => {
-        return positionLabels[position] || position;
-    }
+    const liberoPlayer = getPlayer(startingLineup?.libero);
 
-    const findPlayer = (playerId) => {
-        return diary.entry?.find((player) => player.id === playerId);
-    }
+    const hasStartingLineup = STARTING_POSITIONS.some(
+        (position) => startingLineup?.[`position${position}`]
+    );
 
-    const liberoPlayer = findPlayer(diary.startingLineup?.libero);
+    const resultClass = RESULT_CLASS_MAP[result] ?? "";
 
     return(
         <>
@@ -58,28 +91,23 @@ function DiaryDetail(){
                 {/*경기 기본 정보*/}
                 <section className = "detail_match">
                     <div className="detail_top">
-                        <span className="detail_date">{diary.date}</span>
+                        <span className="detail_date">{date}</span>
                         
-                        <span className="detail_type">
-                            {diary.viewingType}
-                        </span>
+                        <span className="detail_type">{viewingType}</span>
                     </div>
 
                     <div className="detail_score">
-                        <strong className="detail_team">{diary.myTeam}</strong>
+                        <strong className="detail_team">{myTeam}</strong>
                         
                         <div className="score_center">
                             <span>
-                                {diary.myScore} : {diary.opponentScore}
+                                {myScore} : {opponentScore}
                             </span>
 
-                            <p className={
-                                diary.result === "승리" ? "detail_result result_win" : "detail_result result_lose"}>
-                                    {diary.result}
-                                </p>
+                            {result && (<p className={`detail_result ${resultClass}`}>{result}</p>)}
                         </div>
 
-                        <strong className="detail_team">{diary.opponent}</strong>
+                        <strong className="detail_team">{opponent}</strong>
                     </div>
                 </section>
                 
@@ -89,7 +117,7 @@ function DiaryDetail(){
                         <h2>경기 엔트리</h2>
 
                         <div className="detail_entry_list">
-                            {diary.entry.map((player) => (
+                            {entry.map((player) => (
                                 <div className="detail_entry_player" key={player.id}>
                                     <span className="detail_entry_number">{player.number}</span>
                                     
@@ -108,23 +136,23 @@ function DiaryDetail(){
                 )}
 
                 {/*스타팅 라인업 */}
-                {diary.startingLineup && (
+                {hasStartingLineup && (
                     <section className="detail_starting">
                         <h2>스타팅 라인업</h2>
 
                         <div className="detail_starting_list">
-                            {[4, 3, 2, 5, 6, 1].map((position) => {
-                                const player = findPlayer(
-                                    diary.startingLineup[`position${position}`]
+                            {STARTING_POSITIONS.map((position) => {
+                                const startingPlayer = getPlayer(
+                                    startingLineup?.[`position${position}`]
                                 );
 
                                 return(
                                     <div className="detail_starting_player" key={position}>
-                                        <p>{player?.name}</p>
+                                        <p>{startingPlayer?.name}</p>
 
-                                        {player?.position && (
+                                        {startingPlayer?.position && (
                                             <span className="detail_starting_position">
-                                                {getPositionLabel(player.position)}
+                                                {getPositionLabel(startingPlayer.position)}
                                             </span>
                                         )}
                                     </div>
@@ -132,27 +160,26 @@ function DiaryDetail(){
                             })}
                         </div>
 
-                        <div className="detail_libero">
-                            <p>{liberoPlayer?.name}</p>
-
-                            {liberoPlayer?.position && (
-                                <span className="detail_starting_position">
-                                    {getPositionLabel(liberoPlayer.position)}
-                                </span>
-                            )}
-                        </div>
+                        {liberoPlayer && (
+                            <div className="detail_libero">
+                                <p>{liberoPlayer.name}</p>
+                                {liberoPlayer.position && (
+                                    <span className="detail_starting_position">{getPositionLabel(liberoPlayer.position)}</span>
+                                )}
+                            </div>
+                        )}
                     </section>
                 )}
 
                 {/*선수 교체*/}
-                {diary.substitutions?.length > 0 && (
+                {substitutions.length > 0 && (
                     <section className="detail_substitutions">
                         <h2>선수 교체</h2>
 
                         <div className="detail_substitution_list">
-                            {diary.substitutions.map((substitution) => {
-                                const outPlayer = findPlayer(substitution.outPlayer);
-                                const inPlayer = findPlayer(substitution.inPlayer);
+                            {substitutions.map((substitution) => {
+                                const outPlayer = getPlayer(substitution.outPlayer);
+                                const inPlayer = getPlayer(substitution.inPlayer);
 
                                 return(
                                     <div
@@ -178,12 +205,12 @@ function DiaryDetail(){
                 )}
 
                 {/*세트별 흐름*/}
-                {diary.setFlow?.length > 0 &&(
+                {setFlow.length > 0 &&(
                     <section className="detail_setflow">
                         <h2>세트별 흐름</h2>
 
                         <div className="detail_setflow_list">
-                            {diary.setFlow.map((set) => (
+                            {setFlow.map((set) => (
                                 <div className="detail_setflow_item" key={set.set}>
                                     <div className="detail_setflow_top">
                                         <span>{set.set}세트</span>
@@ -208,7 +235,7 @@ function DiaryDetail(){
                         <h1>경기 일기</h1>
 
                         <p className="detail_diary">
-                            {diary.content || "작성한 경기 일기가 없습니다."}
+                            {content || "작성한 경기 일기가 없습니다."}
                         </p>
                     </div>
 
@@ -217,23 +244,23 @@ function DiaryDetail(){
                         <div className="detail_item">
                             <span>오늘의 감정</span>
                             <p>
-                                {diary.emotion || "기록 없음"}
+                                {emotion || "기록 없음"}
                             </p>
                         </div>
 
                         <div className="detail_item">
                             <span>오늘의 선수</span>
                             <p>
-                                {diary.player || "기록 없음"}
+                                {player || "기록 없음"}
                             </p>
                         </div>
 
                         <div className="detail_item">
                             <span>기억에 남는 장면</span>
-                            {diary.moment ? (
+                            {moment ? (
                                 <p>
-                                    {diary.momentSet && `${diary.momentSet}세트 - `}
-                                    {diary.moment}
+                                    {momentSet && `${momentSet}세트 - `}
+                                    {moment}
                                 </p>
                             ) :(
                                 <p>기록 없음</p>

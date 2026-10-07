@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
+import { getStoredDiaries } from "../utils/diaryStorage";
 import Header from "../components/Header";
 import HomePreMatchSection from "../components/HomePreMatchSection";
 import DiaryCard from "../components/DiaryCard";
+import volleyball from "../assets/volleyball.png";
 import "./Home.css";
 
 function Home(){
-    const diaries = JSON.parse(localStorage.getItem("diaries")) || [];
+    const diaries = getStoredDiaries();
 
     const recentDiary = diaries.length >0 ? diaries[diaries.length - 1] : null;
     
@@ -17,11 +19,11 @@ function Home(){
                     <div className="hero_content">
                         <span className="hero_eyebrow">VOLLEYBALL ARCHIVE</span>
 
-                        <h2>
+                        <h1>
                             오늘의 경기를 기록하고,
                             <br/>
                             나만의 응원 이야기를 남겨보세요.
-                        </h2>
+                        </h1>
 
                         <p>
                             경기의 결과부터 그날의 감정까지.
@@ -40,7 +42,7 @@ function Home(){
                     </div>
 
                     <div className="hero_visual">
-                        <div className="volleyball">🏐</div>
+                        <img src={volleyball} alt="배구공" className="volleyball"/>
                         <p>오늘도, 배구와 함께!</p>
                     </div>
                 </section>
@@ -55,7 +57,7 @@ function Home(){
                                 <h2>최근 경기 기록</h2>
                             </div>
 
-                            <a href="/archive">전체 보기</a>
+                            <Link to="/archive">전체 보기</Link>
                         </div>
 
                         {recentDiary? (

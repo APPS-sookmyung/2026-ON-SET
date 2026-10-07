@@ -32,6 +32,10 @@
     text-decoration: none;
 }
 
-.header_nav a:first-child{
+.header_nav a.active{
+    color: #2563eb;
+}
+
+.header_nav a:hover {
     color: #2563eb;
 }

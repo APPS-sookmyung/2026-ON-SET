@@ -1,40 +1,40 @@
-.card-item{
+.card_item{
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.card-item img{
+.card_item img{
     width: 220px;
     max-width: 100%;
     height: auto;
     display: block;
 }
 
-.card-item-info{
+.card_item_info{
     width: 100%;
     margin-top: 16px;
 }
 
-.card-item-info h3{
+.card_item_info h3{
     margin: 0 0 10px;
     font-size: 20px;
 }
 
-.card-keywords{
+.card_keywords{
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
     margin-bottom: 12px;
 }
 
-.card-keywords span{
+.card_keywords span{
     font-size: 14px;
     color: #64748b;
 }
 
-.card-item-info p{
+.card_item_info p{
     margin: 0;
     line-height: 1.6;
     color: #475569;
