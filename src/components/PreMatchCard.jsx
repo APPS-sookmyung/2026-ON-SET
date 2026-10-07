@@ -5,23 +5,25 @@ function PreMatchCard({ card }) {
         return null;
     }
 
+    const {image, name, keywords = [], description} = card;
+
     return (
-        <div className="card-item">
+        <div className="card_item">
             <img
-                src={card.image}
-                alt={`${card.name} 카드`}
+                src={image}
+                alt={`${name} 카드`}
             />
 
-            <div className="card-item-info">
-                <h3>{card.name}</h3>
+            <div className="card_item_info">
+                <h3>{name}</h3>
 
-                <div className="card-keywords">
-                    {card.keywords.map((keyword) => (
+                <div className="card_keywords">
+                    {keywords.map((keyword) => (
                         <span key={keyword}>#{keyword}</span>
                     ))}
                 </div>
 
-                <p>{card.description}</p>
+                <p>{description}</p>
             </div>
         </div>
     );

@@ -1,38 +1,8 @@
-import { useNavigate } from "react-router-dom";
-import { preMatchCards } from "../data/cards";
+import { Link } from "react-router-dom";
+import { getTodayPreMatchCard } from "../utils/PreMatchCardStorage";
 
 function HomePreMatchSection(){
-    const navigate = useNavigate();
-
-    const getTodayCard = () => {
-        const saved = localStorage.getItem("preMatchCard");
-
-        if (!saved){
-            return null;
-        }
-
-        const parsed = JSON.parse(saved);
-        const today = new Date();
-        const todayDate = `${today.getFullYear()}-${String(
-            today.getMonth() + 1
-        ).padStart(2, "0")}-${String(today.getDate()).padStart(2,"0")}`;
-
-        if (parsed.date !== todayDate){
-            return null;
-        }
-
-        return (
-            preMatchCards.find(
-                (card) => card.id === parsed.cardId
-            ) || null
-        );
-    };
-
-    const todayCard = getTodayCard();
-
-    const goPreCard = () => {
-        navigate("/cards/pre-match");
-    };
+    const todayCard = getTodayPreMatchCard();
 
     return(
         <section className="home-card">
@@ -65,12 +35,9 @@ function HomePreMatchSection(){
                 </div>
             )}
 
-            <button
-                className="secondary-button"
-                onClick={goPreCard}
-            >
+            <Link to="/cards/pre-match" className="secondary-button">
                 {todayCard ? "오늘의 카드 보기" : "오늘의 카드 뽑기"}
-            </button>
+            </Link>
         </section>
     );
 }

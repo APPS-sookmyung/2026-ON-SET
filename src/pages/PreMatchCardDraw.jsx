@@ -1,55 +1,19 @@
 import { useState } from "react";
 import PreMatchCard from "../components/PreMatchCard";
 import { preMatchCards } from "../data/cards";
+import { getTodayPreMatchCard, saveTodayPreMatchCard } from "../utils/PreMatchCardStorage";
 import Header from "../components/Header";
 import "./PreMatchCardDraw.css";
 
-const getTodayDate = () => {
-    const today = new Date();
-
-    return `${today.getFullYear()}-${String(
-        today.getMonth() + 1
-    ).padStart(2, "0")}-${String(today.getDate()).padStart(2,"0")}`;
-};
-
 function PreMatchCardDraw(){
-    const getSavedCard = () => {
-        const saved = localStorage.getItem("preMatchCard");
-
-        if (!saved){
-            return null;
-        }
-
-        const parsed = JSON.parse(saved);
-
-        if (parsed.date !== getTodayDate()){
-            localStorage.removeItem("preMatchCard");
-            return null;
-        }
-
-        const savedCard = preMatchCards.find(
-            (card) => card.id === parsed.cardId
-        );
-
-        return savedCard || null;
-    }
-    const [selectedCard, setSelectedCard] = useState(getSavedCard);
+    const [selectedCard, setSelectedCard] = useState(() => getTodayPreMatchCard());
 
     const drawPreMatchCard = () => {
         const randomIndex = Math.floor(Math.random() * preMatchCards.length);
         const drawnCard = preMatchCards[randomIndex];
 
         setSelectedCard(drawnCard);
-
-        const cardData = {
-            date: getTodayDate(),
-            cardId: drawnCard.id,
-        };
-
-        localStorage.setItem(
-            "preMatchCard",
-            JSON.stringify(cardData)
-        );
+        saveTodayPreMatchCard(drawnCard.id);
     };
 
     return (

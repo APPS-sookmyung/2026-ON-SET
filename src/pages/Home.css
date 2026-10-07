@@ -65,7 +65,9 @@
 }
 
 .volleyball{
-  font-size: 80px;
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
 }
 
 .hero_visual p{

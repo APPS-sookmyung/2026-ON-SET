@@ -2,19 +2,16 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import DiaryCard from "../components/DiaryCard";
+import { getStoredDiaries, saveDiaries } from "../utils/diaryStorage";
 import "./Archive.css";
+
+const FILTER_OPTIONS = ["전체", "직관", "집관"];
 
 function Archive(){
     //저장된 일기 불러오기
-    const [diaries, setDiaries] = useState(() => {
-        const savedDiaries = localStorage.getItem("diaries");
-
-        if (!savedDiaries) {
-            return [];
-        }
-        const parsedDiaries = JSON.parse(savedDiaries);
-        return Array.isArray(parsedDiaries) ? parsedDiaries : [];
-    });
+    const [diaries, setDiaries] = useState(
+        () => getStoredDiaries()
+    );
 
     const [filter, setFilter] = useState("전체");
     const filteredDiaries = diaries.filter((diary) => {
@@ -33,10 +30,7 @@ function Archive(){
             (diary) => diary.id !== id
         );
 
-        localStorage.setItem(
-            "diaries",
-            JSON.stringify(updatedDiaries)
-        );
+        saveDiaries(updatedDiaries);
         setDiaries(updatedDiaries);
     }
 
@@ -51,26 +45,9 @@ function Archive(){
                     <p>지금까지 기록한 경기의 순간들을 모아보세요.</p>
                 </div>
                 <div className="archive_filter">
-                    <button className={
-                        filter === "전체" ? "filter_button active" : "filter_button"}
-                        onClick={() => setFilter("전체")}
-                    >
-                        전체
-                    </button>
-
-                    <button className={
-                        filter === "직관" ? "filter_button active" : "filter_button"}
-                        onClick={() => setFilter("직관")}
-                    >
-                        직관
-                    </button>
-
-                    <button className={
-                        filter === "집관" ? "filter_button active" : "filter_button"}
-                        onClick={() => setFilter("집관")}
-                    >
-                        집관
-                    </button>
+                    {FILTER_OPTIONS.map((option) => (
+                        <button key={option} className={filter === option ? "filter_button active" : "filter_button"} onClick={() => setFilter(option)}>{option}</button>
+                    ))}
                 </div>
 
                 {/*기록 수*/}
