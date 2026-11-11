@@ -4,6 +4,7 @@ import DiaryWrite from "./pages/DiaryWrite";
 import Archive from "./pages/Archive";
 import DiaryDetail from "./pages/DiaryDetail";
 import PreMatchCardDraw from "./pages/PreMatchCardDraw";
+import Stats from "./pages/Stats";
 
 function App(){
   return(
@@ -14,6 +15,7 @@ function App(){
       <Route path="/diary/:id" element={<DiaryDetail/>}/>
       <Route path="/diary/edit/:id" element={<DiaryWrite />} />
       <Route path="/cards/pre-match" element={<PreMatchCardDraw />} />
+      <Route path="/stats" element={<Stats />} />
     </Routes>
   );
 }

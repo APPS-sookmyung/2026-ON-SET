@@ -1,5 +1,32 @@
+:root {
+  /* brand */
+  --color_blue: #1f5be3;
+  --color_blue_dark: #1747ad;
+  --color_yellow: #f3c431;
+
+  /* text */
+  --color_text: #151b28;
+  --color_text_sub: #697386;
+  --color_text_light: #8a919e;
+
+  /* background */
+  --color_background: #ffffff;
+  --color_surface: #ffffff;
+
+  /* line */
+  --color_line: #e2e4e8;
+  --color_line_dark: #cfd3d9;
+
+  /* layout */
+  --content_width: 1180px;
+}
+
 * {
   box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
 }
 
 body {
@@ -12,8 +39,10 @@ body {
     "Segoe UI",
     sans-serif;
 
-  background: #f8fafc;
-  color: #1e293b;
+  background: var(--color_background);
+  color: var(--color_text);
+
+  -webkit-font-smoothing: antialiased;
 }
 
 button,
@@ -21,4 +50,12 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
 }

@@ -1,8 +1,5 @@
 .diary_card{
-   flex: 1;
    width: 100%;
-   padding: 22px;
-   background: white;
 }
 
 .diary_card_top{
@@ -18,12 +15,12 @@
 }
 
 .diary_card_type{
-    padding: 5px 10px;
-    border-radius: 14px;
-    background: #eff6ff;
-    color: #2563eb;
-    font-size: 12px;
-    font-weight: 600;
+    padding: 5px 9px;
+    color: var(--color_blue);
+    background: #f1f5ff;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
 }
 
 .diary_card_match{
@@ -52,25 +49,29 @@
 }
 
 .diary_card_score{
-    font-size: 24px;
+    color: var(--color_text);
+    font-size: 34px;
     font-weight: 800;
-    color: #172554;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
 }
 
 .result_tag{
-    padding: 4px 10px;
-    border-radius: 12px;
+    padding: 0;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
+    background: none;
+    border-radius: 0;
 }
 
 .result_tag.win{
-    background: #ecfdf5;
-    color: #059669;
+    background: none;
+    color: #11875d;
 }
 
 .result_tag.lose{
-    background: #fef2f2;
+    background: none;
     color: #dc2626;
 }
 
@@ -80,12 +81,12 @@
 
 .emotion_tag{
     display: inline-block;
-    padding: 5px 10px;
-    margin-bottom: 12px;
-    border-radius: 14px;
-    background: #eff6ff;
-    color: #2563eb;
+    padding: 0;
+    margin-bottom: 10px;
+    background: none;
+    color: var(--color_blue);
     font-size: 12px;
+    font-weight: 700;
 }
 
 .diary_card_content{

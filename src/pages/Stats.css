@@ -1,0 +1,400 @@
+.stats {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 72px 24px;
+}
+
+/*통계 페이지 제목*/
+.stats_header {
+    margin-bottom: 48px;
+}
+
+.stats_eyebrow {
+    display: block;
+    margin-bottom: 20px;
+    color: var(--color_blue);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.stats_header h1 {
+    margin: 0;
+    color: var(--color_text);
+    font-size: 40px;
+    font-weight: 750;
+    letter-spacing: -0.04em;
+}
+
+.stats_header p {
+    margin-top: 20px;
+    color: var(--color_text_sub);
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+/*기본통계*/
+.stats_summary {
+    padding-top: 20px;
+    border-top: 1px solid var(--color_line);
+}
+
+.stats_summary h2 {
+    margin: 0 0 28px;
+    font-size: 18px;
+    color: var(--color_text);
+}
+
+.stats_summary_grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.stats_summary_item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 0;
+    border-top: 1px solid var(--color_line);
+}
+
+.stats_summary_item strong {
+    font-size: 36px;
+    font-weight: 750;
+    letter-spacing: -0.04em;
+    color: var(--color_text);
+}
+
+.stats_summary_item span {
+    font-size: 13px;
+    color: var(--color_text_sub);
+}
+
+/* 세부 통계 영역 */
+.stats_details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 48px;
+    margin-top: 72px;
+}
+
+.stats_detail {
+    min-width: 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--color_text);
+}
+
+.stats_detail_header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.stats_detail_header span {
+    color: var(--color_blue);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.stats_detail_header h2 {
+    margin: 0;
+    color: var(--color_text);
+    font-size: 19px;
+    font-weight: 700;
+}
+
+/*관람방식 그래프*/
+.stats_viewing_bar {
+    display: flex;
+    width: 100%;
+    height: 12px;
+    overflow: hidden;
+    background: #e9edf4;
+    border-radius: 3px;
+}
+
+.stats_live_bar {
+    height: 100%;
+    background: var(--color_blue);
+}
+
+.stats_home_bar {
+    height: 100%;
+    background: #a8c1eb;
+}
+
+.stats_viewing_labels{
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 12px;
+    color: var(--color_text_sub);
+    font-size: 13px;
+}
+
+.stats_win_rates {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color_line);
+}
+
+.stats_win_rates > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.stats_win_rates span {
+    color: var(--color_text_sub);
+    font-size: 13px;
+}
+
+.stats_win_rates strong {
+    color: var(--color_text);
+    font-size: 17px;
+}
+
+/* 경기 결과 그래프 */
+.stats_result_item {
+    margin-bottom: 24px;
+}
+
+.stats_result_label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.stats_result_label span {
+    color: var(--color_text_sub);
+    font-size: 13px;
+}
+
+.stats_result_label strong {
+    color: var(--color_text);
+    font-size: 14px;
+}
+
+.stats_result_bar {
+    width: 100%;
+    height: 12px;
+    overflow: hidden;
+    background: #e9edf4;
+    border-radius: 3px;
+}
+
+.stats_result_win {
+    height: 100%;
+    background: var(--color_blue);
+}
+
+.stats_result_lose {
+    height: 100%;
+    background: #a8c1eb;
+}
+
+.stats_result_note {
+    margin-top: 4px;
+    color: var(--color_text_sub);
+    font-size:12px;
+}
+
+/* 감정 및 선수 통계 */
+.stats_extra {
+    margin-top: 64px;
+}
+
+/* 감정 통계 */
+.stats_emotion_item {
+    margin-bottom: 22px;
+}
+
+.stats_emotion_label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.stats_emotion_label span {
+    color: var(--color_text_sub);
+    font-size: 13px;
+}
+
+.stats_emotion_label strong {
+    color: var(--color_text);
+    font-size: 14px;
+}
+
+.stats_emotion_bar {
+    width: 100%;
+    height: 8px;
+    background: #e9edf4;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.stats_emotion_fill {
+    height: 100%;
+    background: var(--color_blue);
+}
+
+/* 오늘의 선수 */
+.stats_player_item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--color_line);
+}
+
+.stats_player_item:first-child {
+    padding-top: 0;
+}
+
+.stats_player_rank {
+    color: var(--color_blue);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.stats_player_item strong {
+    flex: 1;
+    color: var(--color_text);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.stats_player_count {
+    color: var(--color_text_sub);
+    font-size: 13px;
+}
+
+/* 기록이 없을 때 */
+.stats_empty {
+    padding: 28px 0;
+    color: var(--color_text_sub);
+    font-size: 14px;
+}
+
+
+/* 세트 수별 경기 결과 */
+.stats_set_section {
+    margin-top: 64px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color_text);
+}
+
+.stats_set_description {
+    margin: -12px 0 32px;
+    font-size: 13px;
+    color: var(--color_text_sub);
+}
+
+.stats_set_list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
+}
+
+.stats_set_item {
+    min-width: 0;
+}
+
+.stats_set_heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.stats_set_heading h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color_text);
+}
+
+.stats_set_heading span {
+    font-size: 12px;
+    color: var(--color_text_sub);
+}
+
+.stats_set_bar {
+    display: flex;
+    width: 100%;
+    height: 12px;
+    overflow: hidden;
+    background: #e9edf4;
+    border-radius: 3px;
+}
+
+.stats_set_win {
+    height: 100%;
+    background: var(--color_blue);
+}
+
+.stats_set_lose {
+    height: 100%;
+    background: #a8c1eb;
+}
+
+.stats_set_labels {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--color_text_sub);
+}
+
+.stats_set_section > .stats_result_note {
+    margin-top: 32px;
+}
+
+@media (max-width:600px) {
+    .stats {
+        padding: 44px 16px;
+    }
+
+    .stats_header h1 {
+        font-size: 32px;
+    }
+
+    .stats_summary_grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .stats_summary_item strong {
+        font-size: 30px;
+    }
+
+    .stats_details{
+        grid-template-columns: 1fr;
+        gap: 48px;
+        margin-top: 56px;
+    }
+
+    .stats_set_list {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+    .stats_details {
+        grid-template-columns: 1fr;
+    }
+
+    .stats_set_list {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+}
