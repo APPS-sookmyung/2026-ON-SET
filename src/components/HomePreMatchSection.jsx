@@ -5,9 +5,9 @@ function HomePreMatchSection(){
     const todayCard = getTodayPreMatchCard();
 
     return(
-        <section className="home-card">
-            <div className="section-title">
-                <span>*</span>
+        <section className="section_header">
+            <div className="section_heading">
+                <span className="section_index">01</span>
                 <h2>오늘의 응원 카드</h2>
             </div>
 

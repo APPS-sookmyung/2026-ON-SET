@@ -1,159 +1,254 @@
+
+/* 아카이브 전체 */
 .archive {
     width: 100%;
-    max-width: 1100px;
+    max-width: 1180px;
     margin: 0 auto;
-    padding: 40px 0 80px;
+    padding: 72px 24px 80px;
 }
 
+/* 페이지 제목 */
 .archive_header {
-    margin-bottom: 28px;
+    margin-bottom: 40px;
 }
 
 .archive_header h1 {
-    margin: 0 0 8px;
-    font-size: 30px;
-    color: #172554;
+    margin: 0;
+    color: var(--color_text);
+    font-size: 40px;
+    font-weight: 750;
+    letter-spacing: -0.04em;
 }
 
 .archive_header p {
-    margin: 0;
+    margin: 20px 0 0;
+    color: var(--color_text_sub);
     font-size: 15px;
-    color: #64748b;
+    line-height: 1.8;
 }
 
+/* 관람 방식 필터 */
 .archive_filter {
     display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
+    gap: 28px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--color_line);
 }
 
-.filter_button{
-    padding: 8px 16px;
-    border: 1px solid #cbd5e1;
-    border-radius: 20px;
-    background: white;
-    color: #475569;
+.filter_button {
+    position: relative;
+    padding: 12px 2px;
+    border: none;
+    background: transparent;
+    color: var(--color_text_sub);
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
 }
 
-.filter_button.active{
-    border-color: #2563eb;
-    background: #eff6ff;
-    color: #2563eb;
+.filter_button:hover,
+.filter_button.active {
+    color: var(--color_blue);
 }
 
-.archive_summary{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #e2e8f0;
+.filter_button.active {
+    font-weight: 700;
+}
+
+.filter_button.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--color_blue);
+}
+
+/* 기록 개수 */
+.archive_summary {
+    margin-bottom: 24px;
 }
 
 .archive_summary p {
     margin: 0;
-    color: #475569;
+    color: var(--color_text_sub);
+    font-size: 14px;
 }
 
-.archive_summary strong{
-    color: #2563eb;
+.archive_summary strong {
+    color: var(--color_blue);
+    font-weight: 700;
 }
 
+/* 경기 카드 목록 */
 .archive_list {
     display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 20px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    align-items: stretch;
 }
 
-.archive_empty{
-    grid-column: 1 / -1;
-    padding: 80px 20px;
-    text-align: center;
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-}
-
-.archive_empty h2{
-    margin: 0 0 10px;
-    font-size: 18px;
-    color: #334155;
-}
-
-.archive_empty p {
-    margin: 0;
-    color: #94a3b8;
-}
-
-.diary_link{
-    color: inherit;
-    text-decoration: none;
-}
-
-.archive_item{
+.archive_item {
     display: flex;
     flex-direction: column;
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
+    min-width: 0;
     overflow: hidden;
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    background: var(--color_surface);
+    border: 1px solid var(--color_line);
+    border-radius: 6px;
+    transition: border-color 0.2s ease;
 }
 
-.archive_item:hover{
-    transform: translateY(-2px);
-    border-color: #93c5fd;
+.archive_item:hover {
+    border-color: var(--color_blue);
 }
 
-.diary_link{
-    display: flex;
+/* 경기 상세 페이지 이동 */
+.archive .diary_link {
+    display: block;
     flex: 1;
+    min-width: 0;
+    padding: 22px 20px;
     color: inherit;
     text-decoration: none;
 }
 
-.archive_actions{
+/* 카드 내부 */
+.archive .diary_card {
+    width: 100%;
+    min-width: 0;
+}
+
+.archive .diary_card_top {
+    margin-bottom: 28px;
+}
+
+.archive .diary_card_match {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 10px;
+    padding-bottom: 24px;
+}
+
+.archive .diary_card_team {
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+    overflow-wrap: break-word;
+}
+
+.archive .diary_card_score {
+    font-size: 30px;
+    white-space: nowrap;
+}
+
+.archive .diary_card_bottom {
+    padding-top: 20px;
+}
+
+.archive .diary_card_content {
+    font-size: 13px;
+    line-height: 1.7;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+/* 수정 및 삭제 */
+.archive_actions {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
+    align-items: center;
+    gap: 12px;
     margin-top: auto;
-    padding: 12px 18px;
-    border-top: 1px solid #e2e8f0;
-    background: white;
+    padding: 12px 20px;
+    border-top: 1px solid var(--color_line);
 }
 
 .archive_edit,
-.archive_delete{
-    padding: 5px 10px;
+.archive_delete {
+    padding: 5px 6px;
     border: none;
     background: transparent;
+    font-size: 12px;
+    font-weight: 500;
     cursor: pointer;
-    font-size: 13px;
-}
-
-.archive_edit{
-    color: #475569;
     text-decoration: none;
 }
 
-.archive_delete{
+.archive_edit {
+    color: var(--color_text_sub);
+}
+
+.archive_delete {
     color: #dc2626;
 }
 
 .archive_edit:hover {
-    color: #1e293b;
-    background: #f8fafc;
+    color: var(--color_blue);
+}
+
+.archive_delete:hover {
+    color: #b91c1c;
+}
+
+/* 기록이 없을 때 */
+.archive_empty {
+    grid-column: 1 / -1;
+    padding: 80px 20px;
+    text-align: center;
+    background: #f7f8fb;
+    border: 1px solid var(--color_line);
     border-radius: 6px;
 }
 
-.archive_delete:hover{
-    background: #fef2f2;
-    border-radius: 6px;
+.archive_empty h2 {
+    margin: 0 0 12px;
+    color: var(--color_text);
+    font-size: 18px;
 }
 
-@media (max-width: 768px){
-    .archive_list{
+.archive_empty p {
+    margin: 0;
+    color: var(--color_text_sub);
+    font-size: 14px;
+}
+
+/* 태블릿 */
+@media (max-width: 900px) {
+    .archive_list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* 모바일 */
+@media (max-width: 600px) {
+    .archive {
+        padding: 44px 16px 56px;
+    }
+
+    .archive_header h1 {
+        font-size: 32px;
+    }
+
+    .archive_filter {
+        gap: 24px;
+    }
+
+    .archive_list {
         grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .archive .diary_card_team {
+        font-size: 14px;
+    }
+
+    .archive .diary_card_score {
+        font-size: 32px;
     }
 }
